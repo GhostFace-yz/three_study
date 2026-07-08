@@ -45,6 +45,7 @@ const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
 // colorTexture.center.x = .5	
 // colorTexture.center.y = .5	
 
+
 // 纹理太大使用
 colorTexture.minFilter = THREE.NearestFilter
 // 纹理太小使用
