@@ -8,8 +8,6 @@ const cursor = {
     y: 0
 }
 
-console.log(OrbitControls);
-
 
 window.addEventListener('mousemove', (event) => {
     cursor.x = event.clientX / sizes.width - .5
