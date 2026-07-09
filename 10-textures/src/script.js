@@ -45,10 +45,11 @@ const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
 // colorTexture.center.x = .5	
 // colorTexture.center.y = .5	
 
-
-// 纹理太大使用
+// 提升性能，取消生成缩小版纹理
+colorTexture.generateMipmaps = false
+// （缩小采样）
 colorTexture.minFilter = THREE.NearestFilter
-// 纹理太小使用
+// （放大采样）
 colorTexture.magFilter = THREE.NearestFilter
 /**
  * Base
