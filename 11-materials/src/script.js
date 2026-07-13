@@ -35,7 +35,9 @@ const scene = new THREE.Scene()
 const rgbeLoader = new RGBELoader()
 rgbeLoader.load('./textures/environmentMap/2k.hdr', (envMap) => {
     envMap.mapping = THREE.EquirectangularReflectionMapping
+    // 作为场景的背景显示出来
     scene.background = envMap
+    // 给场景里所有材质提供环境光反射信息
     scene.environment = envMap
 })
 
@@ -106,29 +108,36 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace
 // gradientTexture.generateMipmaps = false
 // materials.gradientMap = gradientTexture
 
-// MeshStandardMaterial
-// const materials = new THREE.MeshStandardMaterial()
-// materials.metalness = 1
-// materials.roughness = 1
-// materials.map = doorColorTexture
-// materials.aoMap = doorAmbientOcclusionTexture
-// materials.aoMapIntensity = 1
-// materials.displacementMap = doorHeightTexture
-// materials.displacementScale = .1
-// materials.metalnessMap = doorMetalnessTexture
-// materials.roughnessMap = doorRoughnessTexture
-// materials.normalMap = doorNormalTexture
-// materials.normalScale.set(.5, .5)
-// materials.transparent = true
-// materials.alphaMap = doorAlphaTexture
+// MeshStandardMaterial（需灯光， 最常用、最真实的材质,基于真实世界的物理光照规则(PBR)）
+const materials = new THREE.MeshStandardMaterial()
+//0是非金属(木头、塑料、布料),1是纯金属(不锈钢、黄金)
+materials.metalness = 1
+// 0是镜面般光滑,1是完全粗糙、无光泽
+materials.roughness = 1
+// 颜色贴图(基础颜色)
+materials.map = doorColorTexture
+// 模拟缝隙、凹陷处光线照不到、更暗的效果,让细节更立体
+materials.aoMap = doorAmbientOcclusionTexture
+materials.aoMapIntensity = 1
+// 根据贴图的黑白值真实地移动顶点位置,做出凹凸不平的物理形状(不是视觉假象,是真的把网格顶点顶起来了),所以你门的geometry要有足够的细分数才有效果
+materials.displacementMap = doorHeightTexture
+materials.displacementScale = .1
+// 让金属度/粗糙度按区域变化(比如门把手是金属,门板是木头,用一张图分别控制不同区域)
+materials.metalnessMap = doorMetalnessTexture
+materials.roughnessMap = doorRoughnessTexture
+materials.normalMap = doorNormalTexture
+materials.normalScale.set(.5, .5)
+// 镂空模板
+materials.transparent = true
+materials.alphaMap = doorAlphaTexture
 
 // gui.add(materials, 'metalness').min(0).max(1).step(.0001)
 // gui.add(materials, 'roughness').min(0).max(1).step(.0001)
 
-//MeshPhysicalMaterial
-const materials = new THREE.MeshPhysicalMaterial()
-materials.metalness = 0
-materials.roughness = 0
+//MeshPhysicalMaterial （在Standard基础上,增加了几个"高级效果层",专门用来模拟一些特殊材质）
+// const materials = new THREE.MeshPhysicalMaterial()
+// materials.metalness = 0
+// materials.roughness = 0
 // materials.map = doorColorTexture
 // materials.aoMap = doorAmbientOcclusionTexture
 // materials.aoMapIntensity = 1
@@ -173,13 +182,13 @@ gui.add(materials, 'roughness').min(0).max(1).step(.0001)
 /**
  * Transmission(透视效果)
  */
-materials.transmission = 1
+// materials.transmission = 1
 //折射率 ior
-materials.ior = 1.5
-materials.thickness = .5
-gui.add(materials, 'transmission').min(0).max(1).step(.0001)
-gui.add(materials, 'ior').min(0).max(10).step(.0001)
-gui.add(materials, 'thickness').min(0).max(1).step(.0001)
+// materials.ior = 1.5
+// materials.thickness = .5
+// gui.add(materials, 'transmission').min(0).max(1).step(.0001)
+// gui.add(materials, 'ior').min(0).max(10).step(.0001)
+// gui.add(materials, 'thickness').min(0).max(1).step(.0001)
 
 /**
  * geometry
