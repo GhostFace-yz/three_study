@@ -3,6 +3,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 
 /**
+ * Texture
+ */
+
+const textureLoader = new THREE.TextureLoader()
+const bakedShadow = textureLoader.load('/textures/bakedShadow.jpg')
+const simpleShadow = textureLoader.load('/textures/simpleShadow.jpg')
+console.log(bakedShadow);
+
+
+/**
  * Base
  */
 // Debug
@@ -18,18 +28,70 @@ const scene = new THREE.Scene()
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+const ambientLight = new THREE.AmbientLight(0xffffff, .4)
 gui.add(ambientLight, 'intensity').min(0).max(3).step(0.001)
 scene.add(ambientLight)
 
 // Directional light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
+const directionalLight = new THREE.DirectionalLight(0xffffff, .4)
 directionalLight.position.set(2, 2, - 1)
 gui.add(directionalLight, 'intensity').min(0).max(3).step(0.001)
 gui.add(directionalLight.position, 'x').min(- 5).max(5).step(0.001)
 gui.add(directionalLight.position, 'y').min(- 5).max(5).step(0.001)
 gui.add(directionalLight.position, 'z').min(- 5).max(5).step(0.001)
 scene.add(directionalLight)
+
+directionalLight.castShadow = true
+directionalLight.shadow.mapSize.width = 1024
+directionalLight.shadow.mapSize.height = 1024
+directionalLight.shadow.camera.near = 1
+directionalLight.shadow.camera.far = 6
+directionalLight.shadow.camera.left = -2
+directionalLight.shadow.camera.right = 2
+directionalLight.shadow.camera.top = 2
+directionalLight.shadow.camera.bottom = -2
+directionalLight.shadow.radius = 10
+
+const directionalLightCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera)
+directionalLightCameraHelper.visible = false
+scene.add(directionalLightCameraHelper)
+
+
+//聚光灯光源
+const spotLight = new THREE.SpotLight(0xffffff, 10, 10, Math.PI * .3)
+spotLight.castShadow = true
+spotLight.shadow.mapSize.width = 1024
+spotLight.shadow.mapSize.height = 1024
+spotLight.shadow.camera.fov = 30
+spotLight.shadow.camera.near = 1
+spotLight.shadow.camera.far = 6
+
+
+spotLight.position.set(0, 2, 2)
+scene.add(spotLight)
+scene.add(spotLight.target)
+
+
+const spotLightCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera)
+spotLightCameraHelper.visible = false
+scene.add(spotLightCameraHelper)
+
+// 点光源
+const pointLight = new THREE.PointLight(0xffffff, .3)
+
+pointLight.castShadow = true
+pointLight.shadow.mapSize.width = 1024
+pointLight.shadow.mapSize.height = 1024
+pointLight.shadow.camera.near = .1
+pointLight.shadow.camera.far = 5
+
+pointLight.position.set(-1, 1, 0)
+scene.add(pointLight)
+
+const pointLightHelper = new THREE.CameraHelper(pointLight.shadow.camera)
+pointLightHelper.visible = false
+scene.add(pointLightHelper)
+
 
 /**
  * Materials
@@ -43,40 +105,61 @@ gui.add(material, 'roughness').min(0).max(1).step(0.001)
  * Objects
  */
 const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5, 32, 32),
-    material
+  new THREE.SphereGeometry(0.5, 32, 32),
+  material
 )
+sphere.castShadow = true
 
 const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(5, 5),
-    material
+  new THREE.PlaneGeometry(5, 5),
+  // new THREE.MeshBasicMaterial({
+  //   map: bakedShadow
+  // })
+  material
 )
 plane.rotation.x = - Math.PI * 0.5
 plane.position.y = - 0.5
 
+plane.receiveShadow = true
+
 scene.add(sphere, plane)
+
+const sphereShadow = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.5, 1.5),
+  new THREE.MeshBasicMaterial({
+    color: 0x000000,
+    transparent: true,
+    alphaMap: simpleShadow
+  })
+)
+sphereShadow.rotation.x = - Math.PI * .5
+sphereShadow.position.y = plane.position.y + .01
+
+scene.add(sphere, sphereShadow, plane)
+
 
 /**
  * Sizes
  */
 const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+  width: window.innerWidth,
+  height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
-    // Update sizes
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
+window.addEventListener('resize', () => {
+  // Update sizes
+  sizes.width = window.innerWidth
+  sizes.height = window.innerHeight
 
-    // Update camera
-    camera.aspect = sizes.width / sizes.height
-    camera.updateProjectionMatrix()
+  // Update camera
+  camera.aspect = sizes.width / sizes.height
+  camera.updateProjectionMatrix()
 
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  // Update renderer
+  renderer.setSize(sizes.width, sizes.height)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
 })
 
 /**
@@ -97,28 +180,40 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+  canvas: canvas
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+renderer.shadowMap.enabled = false
 
 /**
  * Animate
  */
 const clock = new THREE.Clock()
 
-const tick = () =>
-{
-    const elapsedTime = clock.getElapsedTime()
+const tick = () => {
+  const elapsedTime = clock.getElapsedTime()
 
-    // Update controls
-    controls.update()
+  // 动一动球体
+  sphere.position.x = Math.cos(elapsedTime) * 1.5
+  sphere.position.z = Math.sin(elapsedTime) * 1.5
+  sphere.position.y = Math.abs(Math.sin(elapsedTime * 3))
 
-    // Render
-    renderer.render(scene, camera)
+  // 动阴影
+  sphereShadow.position.x = sphere.position.x
+  sphereShadow.position.z = sphere.position.z
+  sphereShadow.material.opacity = (1 - sphere.position.y) * .6
 
-    // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
+
+  // Update controls
+  controls.update()
+
+  // Render
+  renderer.render(scene, camera)
+
+  // Call tick again on the next frame
+  window.requestAnimationFrame(tick)
 }
 
 tick()
