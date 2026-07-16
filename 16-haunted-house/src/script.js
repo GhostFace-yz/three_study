@@ -32,18 +32,26 @@ floor.position.rotation = Math.PI * .5
  */
 const house = new THREE.Group()
 scene.add(house)
+
+// walls
 const wallsSize = {
   width: 4,
   height: 2.5,
   depth: 4
 }
-
 const walls = new THREE.Mesh(
   new THREE.BoxGeometry(wallsSize.width, wallsSize.height, wallsSize.depth),
   new THREE.MeshStandardMaterial()
 )
 walls.position.y += wallsSize.height / 2
 house.add(walls)
+
+// roof
+const roofSize = {
+  radius:  4,
+  height: 1.5,
+  radialSegments: 4
+}
 
 
 
