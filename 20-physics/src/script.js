@@ -36,7 +36,6 @@ const debugObj = {
 gui.add(debugObj, 'createSphere')
 gui.add(debugObj, 'createBox')
 gui.add(debugObj, 'reset')
-
 /**
  * Base
  */
