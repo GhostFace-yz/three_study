@@ -125,7 +125,7 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
-
+    
     if(mixer)
     {
         mixer.update(deltaTime)
