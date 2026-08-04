@@ -1,17 +1,21 @@
-import { BoxGeometry, MeshStandardMaterial, Mesh } from 'three'
 import Environment from './Environment.js'
+import Floor from './Floor.js'
+import Fox from './Fox.js'
 export default class World {
   constructor(experience) {
     this.experience = experience
     this.scene = experience.scene
+    this.resources = experience.resources
 
-    const test = new Mesh(
-      new BoxGeometry(1, 1, 1),
-      new MeshStandardMaterial()
-    )
-    this.scene.add(test)
-
-    this.environment = new Environment(experience)
-    console.log(test);
+    this.resources.on('ready', () => {
+      this.floor = new Floor(experience)
+      this.fox = new Fox(experience)
+      this.environment = new Environment(experience)
+    })
+  }
+  update() {
+    if (this.fox) {
+      this.fox.update()
+    }
   }
 }
