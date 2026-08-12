@@ -112,6 +112,7 @@ export default class Galaxy {
     const positions = new Float32Array(this.parameters.count * 3)
     const colors = new Float32Array(this.parameters.count * 3)
     const scales = new Float32Array(this.parameters.count)
+    const randomness = new Float32Array(this.parameters.count * 3)
 
     const insideColor = new THREE.Color(this.parameters.insideColor)
     const outsideColor = new THREE.Color(this.parameters.outsideColor)
@@ -143,9 +144,14 @@ export default class Galaxy {
         this.parameters.randomness *
         radius
 
-      positions[i3] = Math.cos(branchAngle) * radius + randomX
-      positions[i3 + 1] = randomY
-      positions[i3 + 2] = Math.sin(branchAngle) * radius + randomZ
+      randomness[i3] = randomX
+      randomness[i3 + 1] = randomY
+      randomness[i3 + 2] = randomZ
+
+
+      positions[i3] = Math.cos(branchAngle) * radius
+      positions[i3 + 1] = 0
+      positions[i3 + 2] = Math.sin(branchAngle) * radius
 
       // Color
       const mixedColor = insideColor.clone()
@@ -165,6 +171,7 @@ export default class Galaxy {
     )
     this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
     this.geometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1))
+    this.geometry.setAttribute('aRandomness', new THREE.BufferAttribute(randomness, 3))
 
     this.setMaterial()
 
@@ -183,10 +190,11 @@ export default class Galaxy {
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
       uniforms: {
-        uSize: { value: 8.0 * this.renderer.getPixelRatio() }
+        uTime: { value: 0 },
+        uSize: { value: 30.0 * this.renderer.getPixelRatio() }
       }
     })
-    if(this.debug.active) {
+    if (this.debug.active) {
       this.debugFolder.add(this.material.uniforms.uSize, 'value').min(0).max(10).name('点大小').step(1)
     }
   }
@@ -195,6 +203,7 @@ export default class Galaxy {
   update() {
     // 每帧执行（time.delta 单位是毫秒）：
     // 课程下一步的旋转动画：this.points.rotation.y = this.time.elapsed * 0.001 * this.parameters.spin
+    this.material.uniforms.uTime.value = this.time.elapsed * .001
   }
 
   destroy() {
