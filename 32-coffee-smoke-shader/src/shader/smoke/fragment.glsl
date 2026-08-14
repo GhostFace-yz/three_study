@@ -15,7 +15,7 @@ void main() {
   // 烟雾
   float smoke = texture(uPerlinTexture, smokeUv).r;
 
-  smoke = smoothstep(.5, 1.0, smoke);
+  smoke = smoothstep(.4, 1.0, smoke);
 
   smoke *= smoothstep(.0, .1, vUv.x);
   smoke *= smoothstep(1.0, .9, vUv.x);
@@ -25,7 +25,7 @@ void main() {
 
 
   gl_FragColor = vec4(.6, .3, .2, smoke);
-  gl_FragColor = vec4(1.0, .0, .0, 1.0);
+  // gl_FragColor = vec4(1.0, .0, .0, 1.0);
 
 // 着色器支持色彩映射
 #include <colorspace_fragment>

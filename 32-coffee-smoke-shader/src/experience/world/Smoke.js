@@ -30,11 +30,12 @@ export default class Smoke {
       fragmentShader: coffeeSmokeFragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
+      depthWrite: false,
       uniforms: {
         uTime: new THREE.Uniform(0),
         uPerlinTexture: new THREE.Uniform(this.perlinTexture)
       },
-      wireframe: true
+      // wireframe: true
     })
     this.smokeMesh = new THREE.Mesh(
       this.smokeGeometry,
