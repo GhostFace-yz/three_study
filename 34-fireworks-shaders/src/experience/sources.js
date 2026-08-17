@@ -11,4 +11,36 @@
 //   path: 'particles/1.png',
 // }
 
-export default []
+export default [{
+  name: '1',
+  type: 'texture',
+  path: 'particles/1.png'
+}, {
+  name: '2',
+  type: 'texture',
+  path: 'particles/2.png'
+}, {
+  name: '3',
+  type: 'texture',
+  path: 'particles/3.png'
+}, {
+  name: '4',
+  type: 'texture',
+  path: 'particles/4.png'
+}, {
+  name: '5',
+  type: 'texture',
+  path: 'particles/5.png'
+}, {
+  name: '6',
+  type: 'texture',
+  path: 'particles/6.png'
+}, {
+  name: '7',
+  type: 'texture',
+  path: 'particles/7.png'
+}, {
+  name: '8',
+  type: 'texture',
+  path: 'particles/8.png'
+},]
