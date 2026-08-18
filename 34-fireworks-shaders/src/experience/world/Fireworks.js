@@ -38,6 +38,7 @@ export default class Fireworks {
   createFirework(count, position, size, texture, radius, color) {
     const positionsArray = new Float32Array(count * 3)
     const sizesArray = new Float32Array(count)
+    const timeMultipliersArray = new Float32Array(count)
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3
@@ -54,11 +55,16 @@ export default class Fireworks {
       positionsArray[i3 + 1] = position.y
       positionsArray[i3 + 2] = position.z
       sizesArray[i] = Math.random()
+
+      timeMultipliersArray[i] = 1 + Math.random()
+
     }
 
     this.geometry = new THREE.BufferGeometry()
     this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3))
     this.geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(sizesArray, 1))
+    this.geometry.setAttribute('aTimeMultiplier', new THREE.Float32BufferAttribute(timeMultipliersArray, 1))
+
     texture.flipY = false
     this.material = new THREE.ShaderMaterial({
       vertexShader: fireworkVertex,
@@ -91,6 +97,9 @@ export default class Fireworks {
     )
   }
 
+  createRandomFirework() {
+    const count = Math.random(400 + Math.random() * 1000)
+  }
 
   setGeometry() {
 
