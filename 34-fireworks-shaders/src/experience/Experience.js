@@ -7,6 +7,7 @@ import Renderer from './Renderer.js'
 import Resources from './utils/Resources.js'
 import sources from './sources.js'
 import World from './world/World.js'
+import UserEvent from './utils/UserEvent.js'
 
 /**
  * 组合根（Composition Root）：所有模块的创建、串联、销毁都发生在这里。
@@ -29,6 +30,7 @@ export default class Experience {
     this.renderer = new Renderer(this)
     this.resources = new Resources(sources)
     this.world = new World(this)
+    this.userEvent = new UserEvent()
 
     // 订阅全局事件（只需在组合根订阅一次，不要再重复监听 window）
     this.sizes.on('resize', () => {

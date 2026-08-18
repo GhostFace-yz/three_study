@@ -17,6 +17,7 @@ export default class Fireworks {
     this.resources = experience.resources
     this.time = experience.time
     this.debug = experience.debug
+    this.userEvent = experience.userEvent
     this.resolution = new THREE.Vector2(this.sizes.width * this.sizes.pixelRatio, this.sizes.height * this.sizes.pixelRatio)
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder('fireworks')
@@ -27,10 +28,11 @@ export default class Fireworks {
     // this.setGeometry()
     // this.setMaterial()
     // this.setMesh()
-    this.createFirework(100, new THREE.Vector3(), .5, this.resources.items['7'], 1, new THREE.Color('#8affff'))
-    console.log(this.scene);
-    
-    this.setAnimate()
+    // this.createFirework(100, new THREE.Vector3(), .5, this.resources.items['7'], 1, new THREE.Color('#8affff'))
+    // this.setAnimate()
+    this.userEvent.on('click', () => {
+      this.createFirework(100, new THREE.Vector3(), .5, this.resources.items['7'], 1, new THREE.Color('#8affff'))
+    })
   }
 
   createFirework(count, position, size, texture, radius, color) {
@@ -54,8 +56,6 @@ export default class Fireworks {
       sizesArray[i] = Math.random()
     }
 
-    console.log(color);
-
     this.geometry = new THREE.BufferGeometry()
     this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positionsArray, 3))
     this.geometry.setAttribute('aSize', new THREE.Float32BufferAttribute(sizesArray, 1))
@@ -74,22 +74,23 @@ export default class Fireworks {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     })
-    this.firework = new THREE.Points(
+    const firework = new THREE.Points(
       this.geometry,
       this.material
     )
-
-    this.firework.position.copy(position)
-    this.scene.add(this.firework)
-    
-  }
-
-
-  setAnimate() {
+    firework.position.copy(position)
+    this.scene.add(firework)
     gsap.to(
-      this.material?.uniforms.uProgress, { value: 1, duration: 3, ease: 'linear', onComplete: this.destroy }
+      this.material?.uniforms.uProgress, {
+      value: 1, duration: 3, ease: 'linear', onComplete: () => {
+        this.scene.remove(firework)
+        this.geometry.dispose()
+        this.material.dispose()
+      }
+    }
     )
   }
+
 
   setGeometry() {
 
@@ -106,14 +107,5 @@ export default class Fireworks {
   update() {
     // 每帧执行（time.delta 单位是毫秒）：
     // 后续粒子系统在这里更新 uniform / 位置
-  }
-
-  destroy() {
-    console.log('销毁');
-    
-    // 释放自己创建的资源
-    this.scene.remove(this.firework)
-    this.geometry.dispose()
-    this.material.dispose()
   }
 }
