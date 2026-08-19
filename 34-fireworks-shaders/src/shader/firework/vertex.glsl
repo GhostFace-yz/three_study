@@ -13,7 +13,7 @@ void main() {
   vec3 newPosition = position;
 
   // 爆炸
-  float explodingProgress = remap(progress, .0, .1, .0, 1.0);
+  float explodingProgress = remap(progress, .0, .2, .0, 1.0);
   explodingProgress = clamp(explodingProgress, .0, 1.0);
   explodingProgress = 1.0 - pow(1.0 - explodingProgress, 3.0);
 

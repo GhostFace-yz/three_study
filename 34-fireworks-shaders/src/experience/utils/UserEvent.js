@@ -6,8 +6,8 @@ export default class UserEvent extends EventEmitter {
     this.clickEvent()
   }
   clickEvent() {
-    window.addEventListener('click', () => {
-      this.trigger('click')
+    window.addEventListener('click', (e) => {
+      this.trigger('click', [e])
     })
   }
 }

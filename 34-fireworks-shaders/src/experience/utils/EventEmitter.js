@@ -104,7 +104,7 @@ export default class EventEmitter {
 
     let finalResult = null
     let result = null
-
+    
     // 参数以数组传入，apply 展开
     const args = !(_args instanceof Array) ? [] : _args
 
@@ -140,7 +140,7 @@ export default class EventEmitter {
           finalResult = result
       })
     }
-
+    
     return finalResult
   }
 

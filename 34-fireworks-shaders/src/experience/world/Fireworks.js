@@ -18,6 +18,7 @@ export default class Fireworks {
     this.time = experience.time
     this.debug = experience.debug
     this.userEvent = experience.userEvent
+    this.camera = experience.camera
     this.resolution = new THREE.Vector2(this.sizes.width * this.sizes.pixelRatio, this.sizes.height * this.sizes.pixelRatio)
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder('fireworks')
@@ -25,13 +26,20 @@ export default class Fireworks {
     this.sizes.on('resize', () => {
       this.resolution.set(this.sizes.width * this.sizes.pixelRatio, this.sizes.height * this.sizes.pixelRatio)
     })
+    this.mouse = new THREE.Vector2()
+    this.raycaster = new THREE.Raycaster()
     // this.setGeometry()
     // this.setMaterial()
     // this.setMesh()
     // this.createFirework(100, new THREE.Vector3(), .5, this.resources.items['7'], 1, new THREE.Color('#8affff'))
     // this.setAnimate()
-    this.userEvent.on('click', () => {
-      this.createFirework(100, new THREE.Vector3(), .5, this.resources.items['7'], 1, new THREE.Color('#8affff'))
+    this.userEvent.on('click', (e) => {
+      this.mouse.x = (e.offsetX / this.sizes.width) * 2 - 1
+      this.mouse.y = -(e.offsetY / this.sizes.height) * 2 + 1
+      this.raycaster.setFromCamera(this.mouse, this.camera.instance)
+      this.position = this.raycaster.ray.origin.clone()
+      this.position.add(this.raycaster.ray.direction.multiplyScalar(8))
+      this.createRandomFirework()
     })
   }
 
@@ -53,7 +61,7 @@ export default class Fireworks {
 
       positionsArray[i3] = position.x
       positionsArray[i3 + 1] = position.y
-      positionsArray[i3 + 2] = position.z
+      positionsArray[i3 + 2] = position.z 
       sizesArray[i] = Math.random()
 
       timeMultipliersArray[i] = 1 + Math.random()
@@ -98,7 +106,17 @@ export default class Fireworks {
   }
 
   createRandomFirework() {
-    const count = Math.random(400 + Math.random() * 1000)
+    const count = Math.floor(400 + Math.random() * 5000)
+    const position = new THREE.Vector3(
+    ...this.position
+
+    )
+    const size = .1 + Math.random() * .5 
+    const texture = this.resources.items[`${ 1 + Math.floor(Math.random() * this.resources.sources.length)}`]
+    const radius = .5 + Math.random()
+    const color = new THREE.Color()
+    color.setHSL(Math.random(), 1, .7)
+    this.createFirework(count, position, size, texture, radius, color)
   }
 
   setGeometry() {
