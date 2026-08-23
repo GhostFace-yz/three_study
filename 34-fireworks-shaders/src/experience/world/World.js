@@ -1,4 +1,5 @@
 import Fireworks from './Fireworks.js'
+import customSky from './Sky.js'
 
 /**
  * 场景对象管理器。
@@ -24,6 +25,7 @@ export default class World {
 
   setSceneObjects() {
     this.fireworks = new Fireworks(this.experience)
+    this.sky = new customSky(this.experience)
   }
 
   update() {
