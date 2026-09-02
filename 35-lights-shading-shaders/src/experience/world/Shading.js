@@ -58,6 +58,19 @@ export default class Shading {
       }
     })
     this.scene.add(this.suzanne)
+
+
+    // 光线辅助器
+    this.directionalHelper = new THREE.Mesh(
+      new THREE.PlaneGeometry(),
+      new THREE.MeshBasicMaterial()
+    )
+    this.directionalHelper.material.color.setRGB(.1, .1, 1)
+    this.directionalHelper.material.side = THREE.DoubleSide
+    this.directionalHelper.position.set(0, 0, 3)
+    this.scene.add(this.directionalHelper)
+
+
   }
 
   setDebug() {
