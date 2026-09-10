@@ -9,12 +9,23 @@ varying vec3 vPosition;
 
 void main()
 {
+
+    // 视线
+    vec3 viewDirection = normalize(vPosition - cameraPosition);
+    
+
     vec3 color = uColor;
 
     //光线
     vec3 light = vec3(.0);
     light += ambientLight(vec3(1.0), .02);
-    light += directionalLight(vec3(.1, .1, 1.0), 1.0, vNormal, vec3(.0, .0, 3.0));
+    light += directionalLight(
+        vec3(.1, .1, 1.0),
+         1.0,
+        vNormal, 
+        vec3(.0, .0, 3.0),
+        viewDirection
+        );
     color *= light;
 
     // Final color
