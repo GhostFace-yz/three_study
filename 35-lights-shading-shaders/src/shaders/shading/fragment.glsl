@@ -4,8 +4,8 @@ varying vec3 vNormal;
 varying vec3 vPosition;
 
 #include "../light/ambientLight.glsl"
-
 #include "../light/directionalLight.glsl"
+#include "../light/pointLight.glsl";
 
 void main()
 {
@@ -26,6 +26,26 @@ void main()
         viewDirection,
         20.0
         );
+    light += pointLight(
+        vec3(1.0, .1, .1),
+        1.0,
+        normal, 
+        vec3(.0, 2.5, .0),
+        viewDirection,
+        20.0,
+        vPosition,
+        .25
+    );
+    light += pointLight(
+        vec3(.1, 1.0, .5),
+        1.0,
+        normal, 
+        vec3(3.0,  - 2.0, .0),
+        viewDirection,
+        20.0,
+        vPosition,
+        .25
+    );
     color *= light;
 
     // Final color

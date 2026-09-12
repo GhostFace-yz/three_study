@@ -70,7 +70,21 @@ export default class Shading {
     this.directionalHelper.position.set(0, 0, 3)
     this.scene.add(this.directionalHelper)
 
-
+    // 点光辅助器
+    this.pointLightHelper1 = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(.1, 2),
+      new THREE.MeshBasicMaterial()
+    )
+    this.pointLightHelper1.material.color.setRGB(1, .1, .1)
+    this.pointLightHelper1.position.set(.0, 2.5, .0)
+    this.scene.add(this.pointLightHelper1)
+    this.pointLightHelper2= new THREE.Mesh(
+      new THREE.IcosahedronGeometry(.1, 2),
+      new THREE.MeshBasicMaterial()
+    )
+    this.pointLightHelper2.material.color.setRGB(.1, 1.0, .5)
+    this.pointLightHelper2.position.set(3.0, -2.0,  .0)
+    this.scene.add(this.pointLightHelper2)
   }
 
   setDebug() {
