@@ -27,8 +27,8 @@ export default class Water {
 
   setMaterial() {
     const debugObj = {
-      depthColor: '#268ac0',
-      surfaceColor: '#9bd8ff'
+      depthColor: '#ff4000',
+      surfaceColor: '#151c37'
     }
     this.material = new THREE.ShaderMaterial({
       vertexShader: waterVertexShader,
@@ -44,8 +44,8 @@ export default class Water {
         uSmallWavesSpeed: { value: .12 },
         uDepthColor: { value: new THREE.Color(debugObj.depthColor) },
         uSurfaceColor: { value: new THREE.Color(debugObj.surfaceColor) },
-        uColorOffset: { value: 0.008 },
-        uColorMultiplier: { value: 5 }, 
+        uColorOffset: { value: 0.925 },
+        uColorMultiplier: { value: 1 }, 
       },
       side: THREE.DoubleSide
     })
