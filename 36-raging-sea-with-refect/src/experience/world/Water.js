@@ -12,17 +12,30 @@ export default class Water {
     this.scene = experience.scene
     this.debug = experience.debug
     this.time = experience.time
+    this.renderer = experience.renderer
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder('water')
     }
+    console.log(this.renderer);
+    
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
 
     this.setGeometry()
     this.setMaterial()
     this.setMesh()
+    // this.setAxesHelper()
+  }
+
+  // 坐标轴辅助
+  setAxesHelper() {
+    const axesHelper = new THREE.AxesHelper()
+    axesHelper.position.y += .25
+    this.scene.add(axesHelper)
   }
 
   setGeometry() {
     this.geometry = new THREE.PlaneGeometry(2, 2, 512, 512)
+    this.geometry.deleteAttribute('normal')
   }
 
   setMaterial() {
@@ -45,13 +58,13 @@ export default class Water {
         uDepthColor: { value: new THREE.Color(debugObj.depthColor) },
         uSurfaceColor: { value: new THREE.Color(debugObj.surfaceColor) },
         uColorOffset: { value: 0.925 },
-        uColorMultiplier: { value: 1 }, 
+        uColorMultiplier: { value: 1 },
       },
       side: THREE.DoubleSide
     })
     if (this.debug.active) {
-      this.debugFolder.addColor(debugObj, 'depthColor').name('深处颜色').onChange(() => {this.material.uniforms.uDepthColor.value.set(debugObj.depthColor)})
-      this.debugFolder.addColor(debugObj, 'surfaceColor').name('浅处颜色').onChange(() => {this.material.uniforms.uSurfaceColor.value.set(debugObj.surfaceColor)})
+      this.debugFolder.addColor(debugObj, 'depthColor').name('深处颜色').onChange(() => { this.material.uniforms.uDepthColor.value.set(debugObj.depthColor) })
+      this.debugFolder.addColor(debugObj, 'surfaceColor').name('浅处颜色').onChange(() => { this.material.uniforms.uSurfaceColor.value.set(debugObj.surfaceColor) })
       this.debugFolder.add(this.material.uniforms.uBigWavesElevation, 'value').name('波浪幅度').min(0).max(1).step(.01)
       this.debugFolder.add(this.material.uniforms.uBigWavesFrequency.value, 'x').name('波浪频率x').min(0).max(10).step(.1)
       this.debugFolder.add(this.material.uniforms.uBigWavesFrequency.value, 'y').name('波浪频率z').min(0).max(10).step(.1)
